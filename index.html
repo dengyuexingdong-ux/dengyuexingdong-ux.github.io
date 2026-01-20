@@ -11,39 +11,111 @@
             margin: 0 auto;
             padding: 20px;
             line-height: 1.6;
+            background-color: #f9f9f9;
         }
+        
+        /* 第一眼看到的醒目文字 */
+        .first-sight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 2.2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* 鼠标悬停效果 */
+        .first-sight:hover {
+            background: linear-gradient(135deg, #ff5252, #26a69a);
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 调整主内容位置，为顶部文字留空间 */
+        .main-content {
+            margin-top: 100px;
+        }
+        
         header, footer {
             background-color: #f4f4f4;
             padding: 20px;
             text-align: center;
             border-radius: 5px;
+            margin-top: 10px;
         }
+        
         main {
             padding: 20px 0;
+        }
+        
+        /* 添加一些可爱的装饰 */
+        .cat-icon {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 1.5em;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>欢迎来到我的网站</h1>
-        <p>这是一个所有人都可以访问的网页</p>
-    </header>
+    <!-- 第一眼看到的醒目文字 -->
+    <div class="first-sight">
+        <span class="cat-icon">🐱</span>
+        又想偷看我的网站，你个小馋猫！
+        <span class="cat-icon">🐾</span>
+    </div>
     
-    <main>
-        <h2>关于这个网站</h2>
-        <p>这是一个简单的示例网页，展示了如何创建可供所有人访问的HTML页面。</p>
+    <div class="main-content">
+        <header>
+            <h1>欢迎来到我的网站</h1>
+            <p>这是一个所有人都可以访问的网页</p>
+        </header>
         
-        <h2>功能特点</h2>
-        <ul>
-            <li>响应式设计，适应各种设备</li>
-            <li>简洁美观的界面</li>
-            <li>易于访问和浏览</li>
-        </ul>
-    </main>
-    
-    <footer>
-        <p>&copy; 2023 我的网站. 保留所有权利.</p>
-        <p>联系邮箱: example@email.com</p>
-    </footer>
+        <main>
+            <h2>关于这个网站</h2>
+            <p>这是一个简单的示例网页，展示了如何创建可供所有人访问的HTML页面。</p>
+            
+            <h2>功能特点</h2>
+            <ul>
+                <li>响应式设计，适应各种设备</li>
+                <li>简洁美观的界面</li>
+                <li>易于访问和浏览</li>
+                <li>还有可爱的欢迎语！</li>
+            </ul>
+            
+            <h2>特别说明</h2>
+            <p>看到上面的欢迎语了吗？那是专门为你准备的！😊</p>
+        </main>
+        
+        <footer>
+            <p>&copy; 2023 我的网站. 保留所有权利.</p>
+            <p>联系邮箱: example@email.com</p>
+            <p style="font-size: 0.9em; color: #666;">小馋猫专属网站 🐱</p>
+        </footer>
+    </div>
 </body>
 </html>
