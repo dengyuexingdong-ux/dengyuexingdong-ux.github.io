@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的网页</title>
+    <title>小敏网页</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,7 @@
             padding: 20px 0;
         }
         
-        /* 添加一些可爱的装饰 */
+        /* 可爱的装饰 */
         .cat-icon {
             display: inline-block;
             margin: 0 10px;
@@ -78,6 +78,25 @@
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
+        }
+        
+        /* 闪烁文字效果 */
+        .blinking-text {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50%, 100% {
+                opacity: 1;
+                color: #3498db;
+            }
+            25%, 75% {
+                opacity: 0.3;
+                color: #e74c3c;
+            }
         }
     </style>
 </head>
@@ -126,7 +145,6 @@
                 const canvas = document.getElementById('gameCanvas');
                 const ctx = canvas.getContext('2d');
                 const scoreElement = document.getElementById('score');
-                const startBtn = document.getElementById('startBtn');
                 
                 let score = 0;
                 let gameSpeed = 150;
@@ -191,6 +209,7 @@
                     if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
                         gameRunning = false;
                         startBtn.disabled = false;
+                        startBtn.textContent = '开始游戏';
                         alert('游戏结束！你的分数是: ' + score);
                         return;
                     }
@@ -200,6 +219,7 @@
                         if (head.x === snake[i].x && head.y === snake[i].y) {
                             gameRunning = false;
                             startBtn.disabled = false;
+                            startBtn.textContent = '开始游戏';
                             alert('游戏结束！你的分数是: ' + score);
                             return;
                         }
@@ -300,13 +320,425 @@
                 draw();
             </script>
             
+            <!-- 摸金游戏 -->
+            <h2>摸金游戏 🎭</h2>
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="display: inline-block; background: #1a1a2e; padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); color: white;">
+                    <!-- 游戏信息 -->
+                    <div style="margin-bottom: 10px; display: flex; justify-content: space-around; align-items: center;">
+                        <div>
+                            <p>🤔️ 生命值: <span id="playerHp">100</span>/100</p>
+                            <div style="width: 100px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                                <div id="playerHpBar" style="width: 100%; height: 100%; background: #2ecc71; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>🌙 怪物生命值: <span id="enemyHp">0</span>/20</p>
+                            <div style="width: 100px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                                <div id="enemyHpBar" style="width: 0%; height: 100%; background: #e74c3c; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>当前金额: <span id="gold">0</span> 🌹</p>
+                            <p>目标金额: <span id="targetGold">1000</span> 🌹</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏网格 -->
+                    <div id="gameGrid" style="font-family: monospace; font-size: 1.2em; line-height: 1.2; background: #0f3460; padding: 10px; border-radius: 5px; margin: 10px 0;"></div>
+                    
+                    <!-- 难度选择 -->
+                    <div style="margin: 10px 0;">
+                        <p>选择难度:</p>
+                        <button onclick="selectDifficulty('easy')" style="margin: 5px; padding: 5px 15px; background: #2ecc71; color: white; border: none; border-radius: 3px; cursor: pointer;">简单</button>
+                        <button onclick="selectDifficulty('medium')" style="margin: 5px; padding: 5px 15px; background: #f39c12; color: white; border: none; border-radius: 3px; cursor: pointer;">中等</button>
+                        <button onclick="selectDifficulty('hard')" style="margin: 5px; padding: 5px 15px; background: #e67e22; color: white; border: none; border-radius: 3px; cursor: pointer;">困难</button>
+                        <button onclick="selectDifficulty('devil')" style="margin: 5px; padding: 5px 15px; background: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer;">魔鬼</button>
+                    </div>
+                    
+                    <!-- 控制按钮 -->
+                    <div style="margin: 15px 0;">
+                        <!-- 方向控制 -->
+                        <div style="margin-bottom: 10px;">
+                            <div style="margin-bottom: 5px;">
+                                <button onclick="move('up')" style="width: 40px; height: 30px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 1.2em;">↑</button>
+                            </div>
+                            <div>
+                                <button onclick="move('left')" style="width: 40px; height: 30px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 1.2em; margin-right: 5px;">←</button>
+                                <button onclick="move('down')" style="width: 40px; height: 30px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 1.2em; margin-right: 5px;">↓</button>
+                                <button onclick="move('right')" style="width: 40px; height: 30px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 1.2em;">→</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能按钮 -->
+                        <div>
+                            <button id="startBtn2" onclick="startGame2()" style="margin: 5px; padding: 8px 20px; background: #2ecc71; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;">开始游戏</button>
+                            <button onclick="attack()" style="margin: 5px; padding: 8px 20px; background: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer;">攻击</button>
+                            <button onclick="dig()" style="margin: 5px; padding: 8px 20px; background: #f39c12; color: white; border: none; border-radius: 3px; cursor: pointer;">挖掘</button>
+                            <button onclick="pickup()" style="margin: 5px; padding: 8px 20px; background: #9b59b6; color: white; border: none; border-radius: 3px; cursor: pointer;">拾取</button>
+                            <button id="escapeBtn" onclick="escapeGame()" style="margin: 5px; padding: 8px 20px; background: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; opacity: 0.5; pointer-events: none;">撤离</button>
+                            <button onclick="resetGame2()" style="margin: 5px; padding: 8px 20px; background: #95a5a6; color: white; border: none; border-radius: 3px; cursor: pointer;">重新开始</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                // 摸金游戏
+                const gameGrid = document.getElementById('gameGrid');
+                const playerHpElement = document.getElementById('playerHp');
+                const playerHpBar = document.getElementById('playerHpBar');
+                const enemyHpElement = document.getElementById('enemyHp');
+                const enemyHpBar = document.getElementById('enemyHpBar');
+                const goldElement = document.getElementById('gold');
+                const targetGoldElement = document.getElementById('targetGold');
+                const escapeBtn = document.getElementById('escapeBtn');
+                
+                // 游戏参数
+                let gridSize = 25;
+                let grid = [];
+                let player = { x: 0, y: 0 };
+                let enemy = null;
+                let gold = 0;
+                let targetGold = 1000;
+                let playerHp = 100;
+                let enemyHp = 0;
+                let gameRunning2 = false;
+                let difficulty = 'easy';
+                let refreshTimer = null;
+                let enemyAttackTimer = null;
+                let enemyMoveTimer = null;
+                let attackCooldown = false; // 攻击冷却
+                
+                // 初始化游戏网格
+                function initGrid() {
+                    grid = [];
+                    for (let y = 0; y < gridSize; y++) {
+                        let row = [];
+                        for (let x = 0; x < gridSize; x++) {
+                            // 随机生成墙体（40%概率）
+                            row.push(Math.random() < 0.4 ? '。' : Math.floor(Math.random() * 9) + 1);
+                        }
+                        grid.push(row);
+                    }
+                    
+                    // 放置玩家在随机位置（非墙体）
+                    do {
+                        player.x = Math.floor(Math.random() * gridSize);
+                        player.y = Math.floor(Math.random() * gridSize);
+                    } while (grid[player.y][player.x] === '。');
+                    
+                    drawGrid();
+                }
+                
+                // 绘制游戏网格
+                function drawGrid() {
+                    let output = '';
+                    for (let y = 0; y < gridSize; y++) {
+                        for (let x = 0; x < gridSize; x++) {
+                            if (x === player.x && y === player.y) {
+                                output += '🤔️';
+                            } else if (enemy && x === enemy.x && y === enemy.y) {
+                                output += '🌙';
+                            } else {
+                                output += grid[y][x];
+                            }
+                            output += ' ';
+                        }
+                        output += '\n';
+                    }
+                    gameGrid.innerHTML = output;
+                }
+                
+                // 选择难度
+                function selectDifficulty(level) {
+                    difficulty = level;
+                    switch(level) {
+                        case 'easy':
+                            targetGold = 1000;
+                            break;
+                        case 'medium':
+                            targetGold = 5000;
+                            break;
+                        case 'hard':
+                            targetGold = 100000;
+                            break;
+                        case 'devil':
+                            targetGold = 500000;
+                            break;
+                    }
+                    targetGoldElement.textContent = targetGold;
+                    updateEscapeBtn();
+                }
+                
+                // 开始游戏
+                function startGame2() {
+                    if (!gameRunning2) {
+                        gameRunning2 = true;
+                        gold = 0;
+                        playerHp = 100;
+                        enemy = null;
+                        enemyHp = 0;
+                        
+                        updateStats();
+                        initGrid();
+                        
+                        // 开始刷新计时器
+                        refreshTimer = setInterval(refreshNumbers, 10000);
+                    }
+                }
+                
+                // 重置游戏
+                function resetGame2() {
+                    gameRunning2 = false;
+                    gold = 0;
+                    playerHp = 100;
+                    enemy = null;
+                    enemyHp = 0;
+                    
+                    clearInterval(refreshTimer);
+                    clearInterval(enemyAttackTimer);
+                    clearInterval(enemyMoveTimer);
+                    
+                    updateStats();
+                    initGrid();
+                    updateEscapeBtn();
+                }
+                
+                // 移动玩家
+                function move(direction) {
+                    if (!gameRunning2) return;
+                    
+                    let newX = player.x;
+                    let newY = player.y;
+                    
+                    switch(direction) {
+                        case 'up': newY--; break;
+                        case 'down': newY++; break;
+                        case 'left': newX--; break;
+                        case 'right': newX++; break;
+                    }
+                    
+                    // 检查边界和墙体
+                    if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize && grid[newY][newX] !== '。') {
+                        player.x = newX;
+                        player.y = newY;
+                        drawGrid();
+                    }
+                }
+                
+                // 攻击
+                function attack() {
+                    if (!gameRunning2 || attackCooldown) return;
+                    
+                    // 攻击冷却，2秒
+                    attackCooldown = true;
+                    setTimeout(() => {
+                        attackCooldown = false;
+                    }, 2000);
+                    
+                    // 检查当前位置
+                    const currentCell = grid[player.y][player.x];
+                    
+                    if (currentCell === '。') {
+                        // 攻击墙体，变成数字
+                        grid[player.y][player.x] = Math.floor(Math.random() * 9) + 1;
+                    } else if (enemy && player.x === enemy.x && player.y === enemy.y) {
+                        // 攻击敌人
+                        enemy.hp -= 20;
+                        enemyHp = enemy.hp;
+                        
+                        if (enemy.hp <= 0) {
+                            // 敌人死亡
+                            enemy = null;
+                            enemyHp = 0;
+                            clearInterval(enemyAttackTimer);
+                            clearInterval(enemyMoveTimer);
+                            
+                            // 敌人死亡后，该位置变为"🈚️"
+                            grid[player.y][player.x] = '🈚️';
+                        }
+                    }
+                    
+                    updateStats();
+                    drawGrid();
+                }
+                
+                // 挖掘
+                function dig() {
+                    if (!gameRunning2) return;
+                    
+                    // 检查当前位置
+                    const currentCell = grid[player.y][player.x];
+                    
+                    if (typeof currentCell === 'number' || !isNaN(parseInt(currentCell))) {
+                        // 如果是数字，随机生成物资
+                        const random = Math.random();
+                        if (random < 0.333) {
+                            // 生成🌹
+                            grid[player.y][player.x] = '🌹';
+                        } else if (random < 0.666) {
+                            // 生成🌙怪
+                            if (!enemy) {
+                                enemy = { x: player.x, y: player.y, hp: 20 };
+                                enemyHp = 20;
+                                
+                                // 开始敌人移动和攻击计时器
+                                enemyMoveTimer = setInterval(moveEnemy, 5000); // 每5秒移动一次
+                                enemyAttackTimer = setInterval(enemyAttack, 2000); // 每2秒攻击一次
+                            }
+                        } else {
+                            // 生成🈚️
+                            grid[player.y][player.x] = '🈚️';
+                        }
+                    } else if (currentCell === '🌹' || currentCell === '🌙' || currentCell === '🈚️') {
+                        // 如果已经是物资，再次挖掘变成🈚️
+                        grid[player.y][player.x] = '🈚️';
+                    }
+                    
+                    drawGrid();
+                }
+                
+                // 拾取
+                function pickup() {
+                    if (!gameRunning2) return;
+                    
+                    // 拾取当前位置的🌹
+                    if (grid[player.y][player.x] === '🌹') {
+                        gold += 500;
+                        // 拾取后自动变成数字
+                        grid[player.y][player.x] = Math.floor(Math.random() * 9) + 1;
+                        updateStats();
+                        updateEscapeBtn();
+                        drawGrid();
+                    }
+                }
+                
+                // 敌人移动
+                function moveEnemy() {
+                    if (!enemy || !gameRunning2) return;
+                    
+                    // 简单的追踪AI
+                    let dx = player.x - enemy.x;
+                    let dy = player.y - enemy.y;
+                    
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        // 水平移动
+                        enemy.x += dx > 0 ? 1 : -1;
+                    } else {
+                        // 垂直移动
+                        enemy.y += dy > 0 ? 1 : -1;
+                    }
+                    
+                    // 检查边界
+                    enemy.x = Math.max(0, Math.min(gridSize - 1, enemy.x));
+                    enemy.y = Math.max(0, Math.min(gridSize - 1, enemy.y));
+                    
+                    drawGrid();
+                }
+                
+                // 敌人攻击
+                function enemyAttack() {
+                    if (!enemy || !gameRunning2) return;
+                    
+                    playerHp -= 10;
+                    if (playerHp <= 0) {
+                        playerHp = 0;
+                        gameOver('lose');
+                    }
+                    
+                    updateStats();
+                }
+                
+                // 玩家攻击敌人
+                function attackEnemy() {
+                    if (!enemy || !gameRunning2) return;
+                    
+                    enemy.hp -= 20;
+                    enemyHp = enemy.hp;
+                    
+                    if (enemy.hp <= 0) {
+                        // 敌人死亡
+                        enemy = null;
+                        enemyHp = 0;
+                        clearInterval(enemyAttackTimer);
+                        clearInterval(enemyMoveTimer);
+                    }
+                    
+                    updateStats();
+                    drawGrid();
+                }
+                
+                // 刷新数字
+                function refreshNumbers() {
+                    if (!gameRunning2) return;
+                    
+                    for (let y = 0; y < gridSize; y++) {
+                        for (let x = 0; x < gridSize; x++) {
+                            if (grid[y][x] === '�️' && !(x === player.x && y === player.y) && !(enemy && x === enemy.x && y === enemy.y)) {
+                                // 将🈚️刷新为数字
+                                grid[y][x] = Math.floor(Math.random() * 9) + 1;
+                            }
+                        }
+                    }
+                    
+                    drawGrid();
+                }
+                
+                // 撤离游戏
+                function escapeGame() {
+                    if (gameRunning2 && gold >= targetGold) {
+                        gameOver('win');
+                    }
+                }
+                
+                // 游戏结束
+                function gameOver(result) {
+                    gameRunning2 = false;
+                    clearInterval(refreshTimer);
+                    clearInterval(enemyAttackTimer);
+                    clearInterval(enemyMoveTimer);
+                    
+                    if (result === 'win') {
+                        alert('看来你还有点实力！🎉');
+                    } else {
+                        alert('小子，菜就多练！💀');
+                    }
+                }
+                
+                // 更新状态
+                function updateStats() {
+                    playerHpElement.textContent = playerHp;
+                    playerHpBar.style.width = (playerHp / 100) * 100 + '%';
+                    enemyHpElement.textContent = enemyHp;
+                    enemyHpBar.style.width = (enemyHp / 20) * 100 + '%';
+                    goldElement.textContent = gold;
+                }
+                
+                // 更新撤离按钮状态
+                function updateEscapeBtn() {
+                    if (gold >= targetGold) {
+                        escapeBtn.style.background = '#2ecc71';
+                        escapeBtn.style.opacity = '1';
+                        escapeBtn.style.pointerEvents = 'auto';
+                    } else {
+                        escapeBtn.style.background = '#e74c3c';
+                        escapeBtn.style.opacity = '0.5';
+                        escapeBtn.style.pointerEvents = 'none';
+                    }
+                }
+                
+                // 初始化游戏
+                initGrid();
+            </script>
+            
             <h2>特别说明</h2>
             <p>看到上面的欢迎语了吗？那是专门为你准备的！😊</p>
         </main>
         
         <footer>
             <p>&copy; 我的网站.小敏专属. 保留所有权利.</p>
-            <p>联系方式: <a href="contact.html" style="color: #3498db; text-decoration: none; font-weight: bold;">点击立马联系我</a></p>
+            <p>联系方式: <a href="contact.html" class="blinking-text">点击立马联系我</a></p>
             <p style="font-size: 0.9em; color: #666;">小馋猫专属网站 🐱</p>
         </footer>
     </div>
